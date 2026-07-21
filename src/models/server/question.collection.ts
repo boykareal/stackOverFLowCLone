@@ -22,6 +22,8 @@ export default async function createQuestionCollection(){
     ])
     console.log("Questions Attributes created")
 
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
     await Promise.all([
         databases.createIndex({
             databaseId: db,
