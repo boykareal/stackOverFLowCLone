@@ -1,6 +1,6 @@
 "use client";
 import RTE from "@/components/RTE";
-import {Meteors} from "@/components/ui/meteors";
+import {Meteors} from "@/components/magicui/meteors";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { userAuthStore } from "@/store/Auth";
@@ -13,7 +13,7 @@ import React from "react";
 import { databases, storage } from "@/models/client/config";
 import {
   db,
-  questionAttechementBucket,
+  questionAttachmentBucket,
   questionCollection,
 } from "@/models/name";
 import confetti from "canvas-confetti";
@@ -90,7 +90,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
     if (!formData.attachment) throw new Error("Please upload an image");
 
     const storageResponse = await storage.createFile(
-      questionAttechementBucket,
+      questionAttachmentBucket,
       ID.unique(),
       formData.attachment,
     );
@@ -119,10 +119,10 @@ const QuestionForm = ({ question }: { question?: Question }) => {
     const attachmentId = await (async () => {
       if (!formData.attachment) return question?.attachmentId as string;
 
-      await storage.deleteFile(questionAttechementBucket, question.attachmentId);
+      await storage.deleteFile(questionAttachmentBucket, question.attachmentId);
 
       const file = await storage.createFile(
-        questionAttechementBucket,
+        questionAttachmentBucket,
         ID.unique(),
         formData.attachment,
       );

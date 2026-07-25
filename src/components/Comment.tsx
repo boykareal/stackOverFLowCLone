@@ -10,6 +10,7 @@ import { IconTrash } from "@tabler/icons-react";
 import { ID, Models } from "appwrite";
 import Link from "next/link";
 import React from "react";
+import { Comment } from "@/models/questionInterdace";
 
 const Comments = ({
   comments: _comments,
@@ -17,7 +18,7 @@ const Comments = ({
   typeId,
   className,
 }: {
-  comments: Models.DocumentList<Models.Document>;
+  comments: Models.DocumentList<Comment>;
   type: "question" | "answer";
   typeId: string;
   className?: string;
@@ -46,7 +47,21 @@ const Comments = ({
       setNewComment(() => "");
       setComments((prev) => ({
         total: prev.total + 1,
-        documents: [{ ...response, author: user }, ...prev.documents],
+        documents: [
+          {
+            ...response,
+            content: newComment,
+            authorId: user.$id,
+            type: type,
+            typeId: typeId,
+            author: {
+              $id: user.$id,
+              name: user.name,
+              reputation: user.prefs?.reputation || 0,
+            },
+          } as Comment,
+          ...prev.documents,
+        ],
       }));
     } catch (error: any) {
       window.alert(error?.message || "Error creating comment");
