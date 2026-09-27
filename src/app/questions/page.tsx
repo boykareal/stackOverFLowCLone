@@ -43,8 +43,6 @@ const Page = async ({
     questionCollection,
     queries,
   );
-  console.log("Questions", questions);
-
   const mappedQuestions = (await Promise.all(
     questions.documents.map(async (ques) => {
       const [author, answers, votes] = await Promise.all([

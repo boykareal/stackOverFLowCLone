@@ -22,8 +22,8 @@ const DeleteQuestion = ({
       await databases.deleteDocument(db, questionCollection, questionId);
 
       router.push("/questions");
-    } catch (error: any) {
-      window.alert(error?.message || "Something went wrong");
+    } catch (error: unknown) {
+      window.alert(error instanceof Error ? error.message : "Something went wrong");
     }
   };
 

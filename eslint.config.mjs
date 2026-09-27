@@ -27,8 +27,12 @@ const eslintConfig = defineConfig([
   {
     files: ["src/components/magicui/**/*.{ts,tsx}"],
     rules: {
-      // The vendor-style animation helpers mutate refs for canvas/DOM performance.
+      // These vendor-style animation helpers mutate refs and dynamic CSS for canvas/DOM performance.
       "react-hooks/immutability": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
     },
   },
 ]);

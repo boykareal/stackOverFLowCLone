@@ -5,7 +5,7 @@ import { db, voteCollection } from "@/models/name";
 import { userAuthStore } from "@/store/Auth";
 import { cn } from "@/lib/utils";
 import { IconCaretUpFilled, IconCaretDownFilled } from "@tabler/icons-react";
-import { ID, Models, Query } from "appwrite";
+import { Models, Query } from "appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Vote } from "@/models/questionInterdace";
@@ -40,7 +40,7 @@ const VoteButtons = ({
           Query.equal("typeId", id),
           Query.equal("votedById", user.$id),
         ]);
-        setVotedDocument((response.documents[0] as any) || null);
+        setVotedDocument((response.documents[0] as unknown as Vote) || null);
       }
     })();
   }, [user, id, type]);
@@ -67,8 +67,8 @@ const VoteButtons = ({
 
       setVoteResult(() => data.data.voteResult);
       setVotedDocument(() => data.data.document);
-    } catch (error: any) {
-      window.alert(error?.message || "Something went wrong");
+    } catch (error: unknown) {
+      window.alert(error instanceof Error ? error.message : "Something went wrong");
     }
   };
 
@@ -94,8 +94,8 @@ const VoteButtons = ({
 
       setVoteResult(() => data.data.voteResult);
       setVotedDocument(() => data.data.document);
-    } catch (error: any) {
-      window.alert(error?.message || "Something went wrong");
+    } catch (error: unknown) {
+      window.alert(error instanceof Error ? error.message : "Something went wrong");
     }
   };
 

@@ -4,6 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { ID } from "node-appwrite";
 import {UserPrefs} from "@/store/Auth"
 
+function getErrorResponse(error: unknown, fallback: string) {
+    const appwriteError = error as { message?: string; status?: number; code?: number };
+    return NextResponse.json(
+        { error: appwriteError.message || fallback },
+        { status: appwriteError.status || appwriteError.code || 500 },
+    );
+}
+
 export async function POST(request:NextRequest){
     try {
         const {questionId, answer, authorId} = await request.json();
@@ -25,15 +33,8 @@ export async function POST(request:NextRequest){
         })
 
 
-    } catch (error: any) {
-        return NextResponse.json(
-            {
-                error: error?.message || "Error creating answer"
-            },
-            {
-                status: error?.status || error?.code || 500
-            }
-        )  
+    } catch (error: unknown) {
+        return getErrorResponse(error, "Error creating answer");
     }
 }
 
@@ -53,14 +54,7 @@ export async function DELETE(request: NextRequest){
        return NextResponse.json(
         {data: response},
         {status: 200})
-    } catch (error: any) {
-        return NextResponse.json(
-            {
-                message: error?.message || "Error deleting the answer"
-            },
-            {
-                status: error?.status || error?.code || 500
-            }
-        )
+    } catch (error: unknown) {
+        return getErrorResponse(error, "Error deleting the answer");
     }
 }

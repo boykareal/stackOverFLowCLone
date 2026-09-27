@@ -3,7 +3,6 @@
 import React from "react";
 import { BorderBeam } from "./magicui/border-beam";
 import Link from "next/link";
-import { Models } from "appwrite";
 import slugify from "@/utils/slugify";
 import { avatars } from "@/models/client/config";
 import convertDateToRelativeTime from "@/utils/relativeTime";

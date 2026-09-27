@@ -7,7 +7,7 @@ import { userAuthStore } from "@/store/Auth";
 import { cn } from "@/lib/utils";
 import slugify from "@/utils/slugify";
 import { IconX } from "@tabler/icons-react";
-import { Models, ID } from "appwrite";
+import { ID } from "appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { databases, storage } from "@/models/client/config";
@@ -162,8 +162,8 @@ const QuestionForm = ({ question }: { question?: Question }) => {
       const response = question ? await update() : await create();
 
       router.push(`/questions/${response.$id}/${slugify(formData.title)}`);
-    } catch (error: any) {
-      setError(() => error.message);
+    } catch (error: unknown) {
+      setError(() => error instanceof Error ? error.message : "Unable to save your question");
     }
 
     setLoading(() => false);
