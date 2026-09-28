@@ -28,13 +28,15 @@ export default function AskQuestionPage() {
 
   return (
     <main className="container mx-auto px-4 pb-20 pt-32">
-      <h1 className="mb-3 text-3xl font-bold">Ask a public question</h1>
-      <p className="mb-10 max-w-2xl text-sm text-white/70">
+      <div className="max-w-3xl rounded-2xl border border-slate-800 bg-slate-950/60 p-6 shadow-2xl shadow-black/20 sm:p-8">
+      <h1 className="mb-3 text-3xl font-bold text-slate-50">Ask a public question</h1>
+      <p className="mb-10 max-w-2xl text-sm leading-6 text-slate-400">
         Share enough detail for other developers to understand and answer your
         question.
       </p>
-      <div className="max-w-3xl">
+      <div>
         <QuestionForm />
+      </div>
       </div>
     </main>
   );

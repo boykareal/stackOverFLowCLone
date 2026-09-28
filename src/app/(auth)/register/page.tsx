@@ -73,7 +73,7 @@ function RegisterPage() {
         
     }
     return (
-      <div className="mx-auto w-full max-w-md rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
+      <div className="mx-auto w-full max-w-md rounded-none border border-slate-700 bg-slate-950 p-4 shadow-2xl shadow-black/30 md:rounded-2xl md:p-8">
         <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
           Welcome to Stack Overflow Clone
         </h2>
@@ -96,7 +96,6 @@ function RegisterPage() {
             <LabelInputContainer>
               <Label htmlFor="firstname">First name</Label>
               <Input
-                className="text-black"
                 id="firstname"
                 name="firstname"
                 placeholder="Tyler"
@@ -106,7 +105,6 @@ function RegisterPage() {
             <LabelInputContainer>
               <Label htmlFor="lastname">Last name</Label>
               <Input
-                className="text-black"
                 id="lastname"
                 name="lastname"
                 placeholder="Durden"
@@ -117,7 +115,6 @@ function RegisterPage() {
           <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Email Address</Label>
             <Input
-              className="text-black"
               id="email"
               name="email"
               placeholder="projectmayhem@fc.com"
@@ -127,7 +124,6 @@ function RegisterPage() {
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Password</Label>
             <Input
-              className="text-black"
               id="password"
               name="password"
               placeholder="••••••••"
@@ -148,23 +144,23 @@ function RegisterPage() {
 
           <div className="flex flex-col space-y-4">
             <button
-              className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+              className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md border border-slate-700 bg-slate-900 px-4 font-medium text-slate-100 shadow-input"
               type="button"
               disabled={isLoading}
             >
               <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-              <span className="text-sm text-neutral-700 dark:text-neutral-300">
+              <span className="text-sm text-slate-200">
                 Google
               </span>
               <BottomGradient />
             </button>
             <button
-              className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+              className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md border border-slate-700 bg-slate-900 px-4 font-medium text-slate-100 shadow-input"
               type="button"
               disabled={isLoading}
             >
               <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-              <span className="text-sm text-neutral-700 dark:text-neutral-300">
+              <span className="text-sm text-slate-200">
                 GitHub
               </span>
               <BottomGradient />

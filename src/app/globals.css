@@ -136,9 +136,37 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply min-h-screen bg-background text-foreground;
   }
   html {
     @apply font-sans;
   }
+}
+
+/* Keep the third-party Markdown editor aligned with the app's dark palette. */
+.w-md-editor,
+.w-md-editor-toolbar,
+.w-md-editor-text-input,
+.w-md-editor-text-pre > code,
+.wmde-markdown {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+.w-md-editor {
+  border: 1px solid rgb(71 85 105 / 0.75) !important;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.w-md-editor-toolbar {
+  border-bottom: 1px solid rgb(71 85 105 / 0.75) !important;
+}
+
+.w-md-editor-toolbar li > button {
+  color: #cbd5e1 !important;
+}
+
+.w-md-editor-toolbar li > button:hover {
+  background-color: #1e293b !important;
 }

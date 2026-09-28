@@ -29,7 +29,7 @@ const LabelInputContainer = ({
   return (
     <div
       className={cn(
-        "relative flex w-full flex-col space-y-2 overflow-hidden rounded-xl border border-white/20 bg-slate-950 p-4",
+        "relative flex w-full flex-col space-y-2 overflow-hidden rounded-xl border border-slate-700 bg-slate-900/80 p-4 text-slate-100 shadow-lg shadow-black/10",
         className,
       )}
     >
@@ -182,7 +182,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
         <Label htmlFor="title">
           Title Address
           <br />
-          <small>
+          <small className="text-slate-400">
             Be specific and imagine you&apos;re asking a question to another
             person.
           </small>
@@ -202,7 +202,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
         <Label htmlFor="content">
           What are the details of your problem?
           <br />
-          <small>
+          <small className="text-slate-400">
             Introduce the problem and expand on what you put in the title.
             Minimum 20 characters.
           </small>
@@ -218,7 +218,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
         <Label htmlFor="image">
           Image
           <br />
-          <small>
+          <small className="text-slate-400">
             Add image to your question to make it more clear and easier to
             understand.
           </small>
@@ -243,7 +243,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
         <Label htmlFor="tag">
           Tags
           <br />
-          <small>
+          <small className="text-slate-400">
             Add tags to describe what your question is about. Start typing to
             see suggestions.
           </small>
@@ -305,7 +305,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
         </div>
       </LabelInputContainer>
       <button
-        className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+        className="inline-flex h-11 items-center justify-center rounded-md bg-orange-500 px-6 font-medium text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
         type="submit"
         disabled={loading}
       >
