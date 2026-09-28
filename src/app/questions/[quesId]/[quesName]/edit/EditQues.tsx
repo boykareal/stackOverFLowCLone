@@ -1,39 +1,70 @@
 "use client";
 
 import QuestionForm from "@/components/QuestionForm";
+import { databases } from "@/models/client/config";
+import { db, questionCollection } from "@/models/name";
+import { Question } from "@/models/questionInterdace";
 import { userAuthStore } from "@/store/Auth";
 import slugify from "@/utils/slugify";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
-import { Question } from "@/models/questionInterdace";
-
-const EditQues = ({ question }: { question: Question }) => {
-  const { user } = userAuthStore();
+export default function EditQues() {
+  const { quesId } = useParams<{ quesId: string }>();
+  const { hydrated, user, verifySession } = userAuthStore();
   const router = useRouter();
+  const [question, setQuestion] = React.useState<Question | null>(null);
+  const [error, setError] = React.useState("");
+  const [isCheckingSession, setIsCheckingSession] = React.useState(true);
 
   React.useEffect(() => {
-    if (question.authorId !== user?.$id) {
-      router.push(`/questions/${question.$id}/${slugify(question.title)}`);
-    }
-  }, [question.$id, question.authorId, question.title, router, user?.$id]);
+    if (!hydrated) return;
 
-  if (user?.$id !== question.authorId) return null;
+    void verifySession().finally(() => setIsCheckingSession(false));
+  }, [hydrated, verifySession]);
+
+  React.useEffect(() => {
+    if (!user || !quesId) return;
+
+    void databases
+      .getDocument(db, questionCollection, quesId)
+      .then((document) => setQuestion(document as unknown as Question))
+      .catch(() => setError("This question could not be loaded."));
+  }, [quesId, user]);
+
+  React.useEffect(() => {
+    if (!isCheckingSession && !user) {
+      router.replace("/login");
+      return;
+    }
+
+    if (question && user && question.authorId !== user.$id) {
+      router.replace(`/questions/${question.$id}/${slugify(question.title)}`);
+    }
+  }, [isCheckingSession, question, router, user]);
+
+  if (!hydrated || isCheckingSession || !user) {
+    return null;
+  }
+
+  if (error) {
+    return (
+      <main className="container mx-auto px-4 pb-20 pt-32">
+        <p className="text-red-400">{error}</p>
+      </main>
+    );
+  }
+
+  if (!question || question.authorId !== user.$id) {
+    return null;
+  }
 
   return (
-    <div className="block pb-20 pt-32">
-      <div className="container mx-auto px-4">
-        <h1 className="mb-10 mt-4 text-2xl">Edit your public question</h1>
-
-        <div className="flex flex-wrap md:flex-row-reverse">
-          <div className="w-full md:w-1/3"></div>
-          <div className="w-full md:w-2/3">
-            <QuestionForm question={question} />
-          </div>
-        </div>
+    <main className="container mx-auto px-4 pb-20 pt-32">
+      <h1 className="mb-10 text-2xl font-bold">Edit your question</h1>
+      <div className="max-w-3xl">
+        <QuestionForm question={question} />
       </div>
-    </div>
+    </main>
   );
-};
-
-export default EditQues;
+}
