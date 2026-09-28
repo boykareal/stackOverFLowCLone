@@ -14,7 +14,6 @@ import {
   questionAttachmentBucket,
 } from "@/models/name";
 import { databases, users } from "@/models/server/config";
-import { storage } from "@/models/client/config";
 import { UserPrefs } from "@/store/Auth";
 import convertDateToRelativeTime from "@/utils/relativeTime";
 import slugify from "@/utils/slugify";
@@ -26,6 +25,7 @@ import EditQuestion from "./EditQuestion";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 import { Answer, Comment, Vote } from "@/models/questionInterdace";
 import { Models } from "appwrite";
+import { getPublicFileViewUrl } from "@/utils/appwriteFileUrl";
 
 const Page = async ({
   params,
@@ -186,12 +186,10 @@ const Page = async ({
             />
             <picture>
               <img
-                src={
-                  storage.getFilePreview(
-                    questionAttachmentBucket,
-                    question.attachmentId,
-                  )
-                }
+                src={getPublicFileViewUrl(
+                  questionAttachmentBucket,
+                  question.attachmentId,
+                )}
                 alt={question.title}
                 className="mt-3 rounded-lg"
               />
