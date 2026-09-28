@@ -51,10 +51,15 @@ export const userAuthStore = create<IAuthStore>()(
 
             async verifySession(){
                 try {
-                    const session = await account.getSession("current")
-                    set({session})
-                } catch (error) {
-                    console.log(error)
+                    const [session, user] = await Promise.all([
+                        account.getSession("current"),
+                        account.get<UserPrefs>(),
+                    ])
+                    set({session, user})
+                } catch {
+                    // Persisted browser state can outlive an Appwrite session.
+                    // Clear it so protected UI never relies on an expired session.
+                    set({session: null, user: null, jwt: null})
                 }
             },
 
@@ -85,7 +90,6 @@ export const userAuthStore = create<IAuthStore>()(
                     await account.create(ID.unique(), email, password, name)
                     return {success: true}
                 } catch (error) {
-                    console.log(error)
                     return {
                         success: false,
                         error: error instanceof AppwriteException ? error: null,
@@ -97,8 +101,8 @@ export const userAuthStore = create<IAuthStore>()(
                     await account.deleteSessions()
                     set({session: null, jwt: null, user: null})   
                      
-                } catch (error) {
-                    console.log(error)
+                } catch {
+                    set({session: null, jwt: null, user: null})
                 }
             },
         })),

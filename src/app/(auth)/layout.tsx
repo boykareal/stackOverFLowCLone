@@ -5,16 +5,23 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import React from "react";
 
 const Layout = ({children} : {children: React.ReactNode}) => {
-    const {session} = userAuthStore();
+    const {session, hydrated, verifySession} = userAuthStore();
     const router = useRouter()
+    const [isCheckingSession, setIsCheckingSession] = React.useState(true);
 
     React.useEffect(() => {
-        if(session){
-            router.push("/")
+        if (!hydrated) return;
+
+        void verifySession().finally(() => setIsCheckingSession(false));
+    }, [hydrated, verifySession]);
+
+    React.useEffect(() => {
+        if (session) {
+            router.replace("/questions");
         }
     },[session, router])
 
-    if(session) {
+    if (!hydrated || isCheckingSession || session) {
         return null
     }
 
