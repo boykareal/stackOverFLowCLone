@@ -1,7 +1,6 @@
 "use client"
 
 import dynamic from "next/dynamic";
-import Editor from "@uiw/react-markdown-editor";
 
 const RTE = dynamic(
     () => import("@uiw/react-markdown-editor").then(mod => {
@@ -10,9 +9,12 @@ const RTE = dynamic(
     {ssr: false}
 );
 
-export const MarkdownPreview = Editor.Markdown;
+// The editor package accesses browser APIs during rendering. Keep both editor
+// surfaces client-only so question detail pages can render on the server.
+export const MarkdownPreview = dynamic(
+    () => import("@uiw/react-markdown-editor").then(mod => mod.default.Markdown),
+    {ssr: false},
+);
 
 export default RTE;
-
-
 
