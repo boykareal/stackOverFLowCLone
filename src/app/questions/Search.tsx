@@ -17,7 +17,13 @@ const Search = () => {
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("search", search);
+    const trimmed = search.trim();
+    if (trimmed) {
+      newSearchParams.set("search", trimmed);
+    } else {
+      newSearchParams.delete("search");
+    }
+    newSearchParams.set("page", "1");
     router.push(`${pathname}?${newSearchParams}`);
   };
 

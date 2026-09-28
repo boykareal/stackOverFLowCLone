@@ -26,6 +26,7 @@ import { TracingBeam } from "@/components/ui/tracing-beam";
 import { Answer, Comment, Vote } from "@/models/questionInterdace";
 import { Models } from "appwrite";
 import { getPublicFileViewUrl } from "@/utils/appwriteFileUrl";
+import { toPlainObject } from "@/utils/toPlainObject";
 
 const Page = async ({
   params,
@@ -60,10 +61,6 @@ const Page = async ({
 
   // since it is dependent on the question, we fetch it here outside of the Promise.all
   const author = await users.get<UserPrefs>(question.authorId);
-  const typedUpvotes = upvotes as unknown as Models.DocumentList<Vote>;
-  const typedDownvotes = downvotes as unknown as Models.DocumentList<Vote>;
-  const typedComments = comments as unknown as Models.DocumentList<Comment>;
-  const typedAnswers = answers as unknown as Models.DocumentList<Answer>;
   [comments.documents, answers.documents] = await Promise.all([
     Promise.all(
       comments.documents.map(async (comment) => {
@@ -73,7 +70,7 @@ const Page = async ({
           author: {
             $id: author.$id,
             name: author.name,
-            reputation: author.prefs.reputation,
+            reputation: author.prefs?.reputation ?? 0,
           },
         };
       }),
@@ -109,7 +106,7 @@ const Page = async ({
               author: {
                 $id: author.$id,
                 name: author.name,
-                reputation: author.prefs.reputation,
+                reputation: author.prefs?.reputation ?? 0,
               },
             };
           }),
@@ -123,12 +120,17 @@ const Page = async ({
           author: {
             $id: author.$id,
             name: author.name,
-            reputation: author.prefs.reputation,
+            reputation: author.prefs?.reputation ?? 0,
           },
         };
       }),
     ),
   ]);
+
+  const cleanUpvotes = toPlainObject(upvotes) as unknown as Models.DocumentList<Vote>;
+  const cleanDownvotes = toPlainObject(downvotes) as unknown as Models.DocumentList<Vote>;
+  const cleanComments = toPlainObject(comments) as unknown as Models.DocumentList<Comment>;
+  const cleanAnswers = toPlainObject(answers) as unknown as Models.DocumentList<Answer>;
 
   return (
     <TracingBeam className="container pl-6">
@@ -166,8 +168,8 @@ const Page = async ({
               type="question"
               id={question.$id}
               className="w-full"
-              upvotes={typedUpvotes}
-              downvotes={typedDownvotes}
+              upvotes={cleanUpvotes}
+              downvotes={cleanDownvotes}
             />
             <EditQuestion
               questionId={question.$id}
@@ -221,12 +223,12 @@ const Page = async ({
                   {author.name}
                 </Link>
                 <p>
-                  <strong>{author.prefs.reputation}</strong>
+                  <strong>{author.prefs?.reputation ?? 0}</strong>
                 </p>
               </div>
             </div>
             <Comments
-              comments={typedComments}
+              comments={cleanComments}
               className="mt-4"
               type="question"
               typeId={question.$id}
@@ -234,7 +236,7 @@ const Page = async ({
             <hr className="my-4 border-white/40" />
           </div>
         </div>
-        <Answers answers={typedAnswers} questionId={question.$id} />
+        <Answers answers={cleanAnswers} questionId={question.$id} />
       </div>
     </TracingBeam>
   );

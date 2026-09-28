@@ -6,6 +6,7 @@ import { UserPrefs } from "@/store/Auth";
 import { Query } from "node-appwrite";
 import React from "react";
 import { Question } from "@/models/questionInterdace";
+import { toPlainObject } from "@/utils/toPlainObject";
 
 const Page = async ({
     params,
@@ -47,12 +48,14 @@ const Page = async ({
                 totalVotes: votes.total,
                 author: {
                     $id: author.$id,
-                    reputation: author.prefs.reputation,
+                    reputation: author.prefs?.reputation ?? 0,
                     name: author.name,
                 },
             };
         })
     )) as unknown as Question[];
+
+    const cleanQuestions = toPlainObject(mappedQuestions);
 
     return (
         <div className="px-4">
@@ -60,7 +63,7 @@ const Page = async ({
                 <p>{questions.total} questions</p>
             </div>
             <div className="mb-4 max-w-3xl space-y-6">
-                {mappedQuestions.map(ques => (
+                {cleanQuestions.map(ques => (
                     <QuestionCard key={ques.$id} ques={ques} />
                 ))}
             </div>

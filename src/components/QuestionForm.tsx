@@ -48,10 +48,19 @@ const QuestionForm = ({ question }: { question?: Question }) => {
   const [formData, setFormData] = React.useState({
     title: String(question?.title || ""),
     content: String(question?.content || ""),
-    authorId: user?.$id,
+    authorId: user?.$id || "",
     tags: new Set((question?.tags || []) as string[]),
     attachment: null as File | null,
   });
+
+  React.useEffect(() => {
+    if (user?.$id) {
+      setFormData((prev) => ({
+        ...prev,
+        authorId: prev.authorId || user.$id,
+      }));
+    }
+  }, [user]);
 
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -102,7 +111,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
       {
         title: formData.title,
         content: formData.content,
-        authorId: formData.authorId,
+        authorId: formData.authorId || (user?.$id as string),
         tags: Array.from(formData.tags),
         attachmentId: storageResponse.$id,
       },
@@ -137,7 +146,7 @@ const QuestionForm = ({ question }: { question?: Question }) => {
       {
         title: formData.title,
         content: formData.content,
-        authorId: formData.authorId,
+        authorId: formData.authorId || (user?.$id as string),
         tags: Array.from(formData.tags),
         attachmentId: attachmentId,
       },
@@ -149,8 +158,8 @@ const QuestionForm = ({ question }: { question?: Question }) => {
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // didn't check for attachment because it's optional in updating
-    if (!formData.title || !formData.content || !formData.authorId) {
+    const currentAuthorId = formData.authorId || user?.$id;
+    if (!formData.title || !formData.content || !currentAuthorId) {
       setError(() => "Please fill out all fields");
       return;
     }

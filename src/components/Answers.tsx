@@ -47,7 +47,11 @@ const Answers = ({
         documents: [
           {
             ...data,
-            author: user,
+            author: {
+              $id: user.$id,
+              name: user.name,
+              reputation: user.prefs?.reputation ?? 0,
+            },
             upvotesDocuments: { documents: [], total: 0 },
             downvotesDocuments: { documents: [], total: 0 },
             comments: { documents: [], total: 0 },
@@ -56,7 +60,13 @@ const Answers = ({
         ],
       }));
     } catch (error: unknown) {
-      window.alert(error instanceof Error ? error.message : "Error creating answer");
+      window.alert(
+        error instanceof Error
+          ? error.message
+          : (error as { error?: string; message?: string })?.error ||
+            (error as { error?: string; message?: string })?.message ||
+            "Error creating answer",
+      );
     }
   };
 
@@ -78,7 +88,13 @@ const Answers = ({
         documents: prev.documents.filter((answer) => answer.$id !== answerId),
       }));
     } catch (error: unknown) {
-      window.alert(error instanceof Error ? error.message : "Error deleting answer");
+      window.alert(
+        error instanceof Error
+          ? error.message
+          : (error as { error?: string; message?: string })?.error ||
+            (error as { error?: string; message?: string })?.message ||
+            "Error deleting answer",
+      );
     }
   };
 

@@ -19,14 +19,14 @@ const VoteButtons = ({
 }: {
   type: "question" | "answer";
   id: string;
-  upvotes: Models.DocumentList<Vote>;
-  downvotes: Models.DocumentList<Vote>;
+  upvotes: { total: number; documents?: Vote[] } | Models.DocumentList<Vote>;
+  downvotes: { total: number; documents?: Vote[] } | Models.DocumentList<Vote>;
   className?: string;
 }) => {
   const [votedDocument, setVotedDocument] =
     React.useState<Vote | null>(); // undefined means not fetched yet
   const [voteResult, setVoteResult] = React.useState<number>(
-    upvotes.total - downvotes.total,
+    (upvotes?.total || 0) - (downvotes?.total || 0),
   );
 
   const { user } = userAuthStore();
@@ -68,7 +68,13 @@ const VoteButtons = ({
       setVoteResult(() => data.data.voteResult);
       setVotedDocument(() => data.data.document);
     } catch (error: unknown) {
-      window.alert(error instanceof Error ? error.message : "Something went wrong");
+      window.alert(
+        error instanceof Error
+          ? error.message
+          : (error as { message?: string; error?: string })?.message ||
+            (error as { message?: string; error?: string })?.error ||
+            "Something went wrong",
+      );
     }
   };
 
@@ -95,7 +101,13 @@ const VoteButtons = ({
       setVoteResult(() => data.data.voteResult);
       setVotedDocument(() => data.data.document);
     } catch (error: unknown) {
-      window.alert(error instanceof Error ? error.message : "Something went wrong");
+      window.alert(
+        error instanceof Error
+          ? error.message
+          : (error as { message?: string; error?: string })?.message ||
+            (error as { message?: string; error?: string })?.error ||
+            "Something went wrong",
+      );
     }
   };
 

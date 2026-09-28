@@ -22,34 +22,33 @@ export async function POST(request:NextRequest){
             questionId: questionId
         })
 
-        const prefs = await users.getPrefs<UserPrefs>(authorId)
-        
+        const prefs = await users.getPrefs<UserPrefs>(authorId);
+        const currentReputation = Number(prefs.reputation) || 0;
         await users.updatePrefs(authorId, {
-            reputation:Number(prefs.reputation) + 1
-        })
+            reputation: currentReputation + 1,
+        });
 
         return NextResponse.json(response, {
-            status: 201
-        })
-
-
+            status: 201,
+        });
     } catch (error: unknown) {
         return getErrorResponse(error, "Error creating answer");
     }
 }
 
-export async function DELETE(request: NextRequest){
+export async function DELETE(request: NextRequest) {
     try {
-       const {answerId} = await request.json()
+        const { answerId } = await request.json();
 
-       const answer = await databases.getDocument(db, answerCollection, answerId)
+        const answer = await databases.getDocument(db, answerCollection, answerId);
 
-       const response = await databases.deleteDocument(db, answerCollection, answerId)
+        const response = await databases.deleteDocument(db, answerCollection, answerId);
 
-       const prefs = await users.getPrefs<UserPrefs>(answer.authorId)
-       await users.updatePrefs(answer.authorId, {
-        reputation: Number(prefs.reputation) - 1
-       })
+        const prefs = await users.getPrefs<UserPrefs>(answer.authorId);
+        const currentReputation = Number(prefs.reputation) || 0;
+        await users.updatePrefs(answer.authorId, {
+            reputation: Math.max(0, currentReputation - 1),
+        });
 
        return NextResponse.json(
         {data: response},
