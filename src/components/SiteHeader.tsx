@@ -4,12 +4,17 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { userAuthStore } from "@/store/Auth";
 import slugify from "@/utils/slugify";
+import React from "react";
 
 export default function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, session, hydrated, logout } = userAuthStore();
+  const { user, session, hydrated, logout, verifySession } = userAuthStore();
   const profileHref = user ? `/users/${user.$id}/${slugify(user.name || "user")}` : "/login";
+
+  React.useEffect(() => {
+    if (hydrated) void verifySession();
+  }, [hydrated, verifySession]);
 
   async function handleLogout() {
     await logout();

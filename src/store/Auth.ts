@@ -52,11 +52,12 @@ export const userAuthStore = create<IAuthStore>()(
 
             async verifySession(){
                 try {
-                    const [session, user] = await Promise.all([
-                        account.getSession("current"),
+                    const session = await account.getSession("current");
+                    const [user, jwt] = await Promise.all([
                         account.get<UserPrefs>(),
-                    ])
-                    set({session, user})
+                        account.createJWT(),
+                    ]);
+                    set({session, user, jwt: jwt.jwt});
                 } catch {
                     // Persisted browser state can outlive an Appwrite session.
                     // Clear it so protected UI never relies on an expired session.
@@ -90,7 +91,7 @@ export const userAuthStore = create<IAuthStore>()(
                 const origin = window.location.origin;
                 account.createOAuth2Session(
                     provider === "google" ? OAuthProvider.Google : OAuthProvider.Github,
-                    `${origin}/questions`,
+                    `${origin}/oauth/callback`,
                     `${origin}/login?oauthError=1`,
                 );
             },
