@@ -2,7 +2,7 @@ import {create} from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 
-import {AppwriteException, ID, Models} from "appwrite"
+import {AppwriteException, ID, Models, OAuthProvider} from "appwrite"
 import { account } from "@/models/client/config";
 
 
@@ -34,7 +34,8 @@ interface IAuthStore{
         success: boolean;
         error?: AppwriteException | null
     }>
-    logout(): Promise<void>
+    logout(): Promise<void>;
+    startOAuth(provider: "google" | "github"): void;
 }
 
 export const userAuthStore = create<IAuthStore>()(
@@ -83,6 +84,15 @@ export const userAuthStore = create<IAuthStore>()(
                         error: error instanceof AppwriteException ? error: null,
                     }
                 }
+            },
+
+            startOAuth(provider) {
+                const origin = window.location.origin;
+                account.createOAuth2Session(
+                    provider === "google" ? OAuthProvider.Google : OAuthProvider.Github,
+                    `${origin}/questions`,
+                    `${origin}/login?oauthError=1`,
+                );
             },
 
             async createAccount(name:string, email:string, password:string) {

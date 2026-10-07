@@ -33,7 +33,7 @@ const LabelInputContainer = ({
 
 
 function Loginpage() {
-    const {login} = userAuthStore()
+    const {login, startOAuth} = userAuthStore()
     const [isLoading, setIsLoading] = React.useState(false)
     const [error, setError] = React.useState("")
 
@@ -116,6 +116,7 @@ function Loginpage() {
               className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md border border-slate-700 bg-slate-900 px-4 font-medium text-slate-100 shadow-input"
               type="button"
               disabled={isLoading}
+              onClick={() => startOAuth("google")}
             >
               <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
               <span className="text-sm text-slate-200">
@@ -127,6 +128,7 @@ function Loginpage() {
               className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md border border-slate-700 bg-slate-900 px-4 font-medium text-slate-100 shadow-input"
               type="button"
               disabled={isLoading}
+              onClick={() => startOAuth("github")}
             >
               <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
               <span className="text-sm text-slate-200">
