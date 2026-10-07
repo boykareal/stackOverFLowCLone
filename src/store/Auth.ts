@@ -91,7 +91,7 @@ export const userAuthStore = create<IAuthStore>()(
 
             startOAuth(provider) {
                 const origin = window.location.origin;
-                account.createOAuth2Session(
+                account.createOAuth2Token(
                     provider === "google" ? OAuthProvider.Google : OAuthProvider.Github,
                     `${origin}/oauth/callback`,
                     `${origin}/login?oauthError=1`,

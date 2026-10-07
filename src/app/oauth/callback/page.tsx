@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { userAuthStore } from "@/store/Auth";
+import { account } from "@/models/client/config";
 
 export default function OAuthCallbackPage() {
   const router = useRouter();
@@ -14,16 +15,34 @@ export default function OAuthCallbackPage() {
     if (!hydrated) return;
 
     let active = true;
-    void verifySession().then((sessionError) => {
-      if (!active) return;
-      if (userAuthStore.getState().user) {
-        router.replace("/questions");
-      } else {
-        setError(sessionError
-          ? `Appwrite could not restore the session: ${sessionError}`
-          : "Appwrite did not return an active session. Please try signing in again.");
+    void (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get("userId");
+      const secret = params.get("secret");
+      const oauthError = params.get("error");
+      window.history.replaceState({}, "", window.location.pathname);
+
+      try {
+        if (oauthError) throw new Error("The identity provider could not complete sign-in.");
+        if (!userId || !secret) throw new Error("The OAuth callback did not include the session credentials.");
+
+        await account.createSession(userId, secret);
+        const sessionError = await verifySession();
+        if (!active) return;
+
+        if (userAuthStore.getState().user) {
+          router.replace("/questions");
+        } else {
+          setError(sessionError
+            ? `Appwrite could not create an active session: ${sessionError}`
+            : "Appwrite did not return an active session. Please try signing in again.");
+        }
+      } catch (callbackError) {
+        if (active) {
+          setError(callbackError instanceof Error ? callbackError.message : "OAuth sign-in failed.");
+        }
       }
-    });
+    })();
 
     return () => {
       active = false;
