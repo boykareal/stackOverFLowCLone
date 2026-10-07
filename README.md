@@ -2,7 +2,7 @@
 
 A full-stack developer Q&A platform where developers can ask questions, share answers, vote on useful content, and build reputation.
 
-**Live demo:** [stack-over-f-low-c-lone.vercel.app](https://stack-over-f-low-c-lone.vercel.app/)
+**Live demo:** [stack-over-f-low-c-lone.vercel.app](https://stack-over-f-low-c-lone.vercel.app/login/)
 
 ## Highlights
 
