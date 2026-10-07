@@ -17,7 +17,7 @@ interface IAuthStore{
     hydrated: boolean
 
     setHydrated(): void;
-    verifySession(): Promise<void>;
+    verifySession(): Promise<string | null>;
     login(
         email: string,
         password: string,
@@ -53,15 +53,17 @@ export const userAuthStore = create<IAuthStore>()(
             async verifySession(){
                 try {
                     const session = await account.getSession("current");
-                    const [user, jwt] = await Promise.all([
-                        account.get<UserPrefs>(),
-                        account.createJWT(),
-                    ]);
-                    set({session, user, jwt: jwt.jwt});
-                } catch {
+                    const user = await account.get<UserPrefs>();
+                    set({session, user});
+                    return null;
+                } catch (error) {
                     // Persisted browser state can outlive an Appwrite session.
                     // Clear it so protected UI never relies on an expired session.
-                    set({session: null, user: null, jwt: null})
+                    set({session: null, user: null, jwt: null});
+                    if (error instanceof AppwriteException) {
+                        return `${error.message} (${error.code}, ${error.type})`;
+                    }
+                    return error instanceof Error ? error.message : "Unknown session error";
                 }
             },
 

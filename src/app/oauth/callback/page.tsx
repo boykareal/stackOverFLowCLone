@@ -14,12 +14,14 @@ export default function OAuthCallbackPage() {
     if (!hydrated) return;
 
     let active = true;
-    void verifySession().then(() => {
+    void verifySession().then((sessionError) => {
       if (!active) return;
       if (userAuthStore.getState().user) {
         router.replace("/questions");
       } else {
-        setError("Appwrite did not return an active session. Please try signing in again.");
+        setError(sessionError
+          ? `Appwrite could not restore the session: ${sessionError}`
+          : "Appwrite did not return an active session. Please try signing in again.");
       }
     });
 
